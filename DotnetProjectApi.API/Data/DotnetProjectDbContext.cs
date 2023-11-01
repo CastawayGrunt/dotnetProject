@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using DotnetProjectApi.API.Features.Products.Models;
+using DotnetProjectApi.API.Features.Orders.Models;
 
 namespace DotnetProjectApi.API.Data;
 
 public class DotnetProjectDbContext : DbContext
 {
     public DbSet<ProductModel> Products { get; set; } = null!;
+    public DbSet<OrderModel> Orders { get; set; } = null!;
 
     public DotnetProjectDbContext(DbContextOptions<DotnetProjectDbContext> options) : base(options)
     {
@@ -44,7 +46,6 @@ public class DotnetProjectDbContext : DbContext
                 Sold = 0,
                 ImageUrl = "https://via.placeholder.com/150"
             }
-
         );
         base.OnModelCreating(modelBuilder);
     }
