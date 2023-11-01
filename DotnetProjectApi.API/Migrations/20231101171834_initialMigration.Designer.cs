@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace dotnetProject.Migrations
 {
     [DbContext(typeof(DotnetProjectDbContext))]
-    [Migration("20231026232111_initialMigration")]
+    [Migration("20231101171834_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -55,6 +55,38 @@ namespace dotnetProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1b81a292-901f-42a3-b142-1ee1420292bc"),
+                            Description = "Product 1 Description",
+                            ImageUrl = "https://via.placeholder.com/150",
+                            Name = "Product 1",
+                            Price = 10.00m,
+                            Sold = 0,
+                            Stock = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("37e7e501-e02e-4d41-8b2f-d5319bfc4e7a"),
+                            Description = "Product 2 Description",
+                            ImageUrl = "https://via.placeholder.com/150",
+                            Name = "Product 2",
+                            Price = 20.00m,
+                            Sold = 0,
+                            Stock = 20
+                        },
+                        new
+                        {
+                            Id = new Guid("2750094b-5162-47fa-8929-d02a0568d208"),
+                            Description = "Product 3 Description",
+                            ImageUrl = "https://via.placeholder.com/150",
+                            Name = "Product 3",
+                            Price = 30.00m,
+                            Sold = 0,
+                            Stock = 30
+                        });
                 });
 #pragma warning restore 612, 618
         }

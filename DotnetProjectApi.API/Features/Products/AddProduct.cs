@@ -4,8 +4,6 @@ using AutoMapper;
 using DotnetProjectApi.API.Data;
 using DotnetProjectApi.API.Features.Products.Models;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.EntityFrameworkCore;
 
 namespace DotnetProjectApi.API.Features.Products
 {
