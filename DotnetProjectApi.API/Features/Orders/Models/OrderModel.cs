@@ -7,7 +7,7 @@ namespace DotnetProjectApi.API.Features.Orders.Models
         [Key]
         public Guid Id { get; set; }
 
-        public List<OrderDetailModel> Products { get; set; } = new();
+        public List<Guid> Products { get; set; } = new();
         public AddressModel ShippingAddress { get; set; } = new();
         public DateTime? OrderPlacedDateTime { get; set; }
 
@@ -16,6 +16,5 @@ namespace DotnetProjectApi.API.Features.Orders.Models
         public Guid OrderNumber { get; set; }
         // Add when user is implemented
         // public Guid UserId { get; set; }
-
     }
 }
