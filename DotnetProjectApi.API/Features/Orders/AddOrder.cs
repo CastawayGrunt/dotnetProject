@@ -1,8 +1,8 @@
-using System.Text.Json.Serialization;
 using AutoMapper;
 using DotnetProjectApi.API.Data;
 using DotnetProjectApi.API.Features.Orders.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotnetProjectApi.API.Features.Orders
 {
@@ -10,8 +10,8 @@ namespace DotnetProjectApi.API.Features.Orders
     {
         public record Command : IRequest
         {
-            public List<OrderDetailModel> Products { get; init; } = new();
-            public AddressModel ShippingAddress { get; init; } = new();
+            public List<Guid> Products { get; init; } = new();
+            public AddressViewModel ShippingAddress { get; init; } = new();
         }
 
         public class Handler : IRequestHandler<Command>
@@ -25,11 +25,34 @@ namespace DotnetProjectApi.API.Features.Orders
 
             public async Task<Unit> Handle(Command request, CancellationToken ct = default)
             {
+                var products = await _context.Products
+                    .Where(x => request.Products.Contains(x.Id))
+                    .ToListAsync(ct);
+
+                var productIds = request.Products.Distinct();
+                var productQuantities = productIds.ToDictionary(id => id, id => request.Products.Count(p => p == id));
+
+                var productsWithQuantities = products
+                    .Where(p => productQuantities.ContainsKey(p.Id))
+                    .Select(p => new { Product = p, Quantity = productQuantities[p.Id] })
+                    .ToList();
+
+                var total = productsWithQuantities.Sum(x => x.Product.Price * x.Quantity);
                 var order = new OrderModel
                 {
                     Products = request.Products,
-                    ShippingAddress = request.ShippingAddress,
-                    OrderTotal = request.Products.Sum(x => x.ProductPrice * x.Quantity),
+                    ShippingAddress = new AddressModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Street = request.ShippingAddress.Street,
+                        City = request.ShippingAddress.City,
+                        Country = request.ShippingAddress.Country,
+                        FirstName = request.ShippingAddress.FirstName,
+                        LastName = request.ShippingAddress.LastName,
+                        PostalCode = request.ShippingAddress.PostalCode,
+                        Province = request.ShippingAddress.Province
+                    },
+                    OrderTotal = total,
                     OrderPlacedDateTime = DateTime.UtcNow,
                     OrderStatus = OrderStatus.Pending,
                     OrderNumber = Guid.NewGuid()
@@ -37,18 +60,17 @@ namespace DotnetProjectApi.API.Features.Orders
 
                 _context.Orders.Add(order);
 
-                foreach (var ProductOrdered in request.Products)
+                productsWithQuantities.ForEach(pq =>
                 {
-                    var product = await _context.Products.FindAsync(ProductOrdered.ProductId);
-
-                    if (product != null && product.Id == ProductOrdered.ProductId)
+                    var product = products.FirstOrDefault(x => x.Id == pq.Product.Id);
+                    if (product != null)
                     {
-                        product.Stock -= ProductOrdered.Quantity;
-                        product.Sold += ProductOrdered.Quantity;
+                        product.Stock -= pq.Quantity;
+                        product.Sold += pq.Quantity;
                     }
-                }
+                });
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return default;
             }

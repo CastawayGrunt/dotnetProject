@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -51,6 +52,7 @@ namespace dotnetProject.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Products = table.Column<List<Guid>>(type: "uuid[]", nullable: false),
                     ShippingAddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     OrderPlacedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     OrderTotal = table.Column<decimal>(type: "numeric", nullable: false),
@@ -68,40 +70,15 @@ namespace dotnetProject.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "OrderDetailModel",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    ProductPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    OrderModelId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderDetailModel", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderDetailModel_Orders_OrderModelId",
-                        column: x => x.OrderModelId,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "Description", "ImageUrl", "Name", "Price", "Sold", "Stock" },
                 values: new object[,]
                 {
-                    { new Guid("009ba35e-e745-4e6b-84d5-16a92c9bfe8e"), "Product 1 Description", "https://via.placeholder.com/150", "Product 1", 10.00m, 0, 10 },
-                    { new Guid("085f8264-ea9a-4419-8bd3-6c07808080f8"), "Product 3 Description", "https://via.placeholder.com/150", "Product 3", 30.00m, 0, 30 },
-                    { new Guid("c7565bec-e61c-4dbc-a291-c18a1d4ee70d"), "Product 2 Description", "https://via.placeholder.com/150", "Product 2", 20.00m, 0, 20 }
+                    { new Guid("18fcd916-f8e4-4ca0-a017-c8832407f38c"), "Product 3 Description", "https://via.placeholder.com/150", "Product 3", 30.00m, 0, 30 },
+                    { new Guid("6a0f8d7c-22e7-4453-ad8a-091b54516654"), "Product 1 Description", "https://via.placeholder.com/150", "Product 1", 10.00m, 0, 10 },
+                    { new Guid("e8503b9b-1328-4aff-9fcd-67e2a0aab429"), "Product 2 Description", "https://via.placeholder.com/150", "Product 2", 20.00m, 0, 20 }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderDetailModel_OrderModelId",
-                table: "OrderDetailModel",
-                column: "OrderModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShippingAddressId",
@@ -113,9 +90,6 @@ namespace dotnetProject.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderDetailModel");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -124,17 +98,17 @@ namespace dotnetProject.Migrations
             migrationBuilder.DeleteData(
                 table: "Products",
                 keyColumn: "Id",
-                keyValue: new Guid("009ba35e-e745-4e6b-84d5-16a92c9bfe8e"));
+                keyValue: new Guid("18fcd916-f8e4-4ca0-a017-c8832407f38c"));
 
             migrationBuilder.DeleteData(
                 table: "Products",
                 keyColumn: "Id",
-                keyValue: new Guid("085f8264-ea9a-4419-8bd3-6c07808080f8"));
+                keyValue: new Guid("6a0f8d7c-22e7-4453-ad8a-091b54516654"));
 
             migrationBuilder.DeleteData(
                 table: "Products",
                 keyColumn: "Id",
-                keyValue: new Guid("c7565bec-e61c-4dbc-a291-c18a1d4ee70d"));
+                keyValue: new Guid("e8503b9b-1328-4aff-9fcd-67e2a0aab429"));
 
             migrationBuilder.InsertData(
                 table: "Products",

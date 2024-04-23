@@ -11,12 +11,12 @@ public class OrdersController : ApiController
     {
     }
 
-    // [HttpGet]
-    // public async Task<ActionResult<Get.Response>> Get()
-    // {
-    //     var orders = await Sender.Send(new Get.Query { });
-    //     return Ok(orders);
-    // }
+    [HttpGet]
+    public async Task<ActionResult<Get.Response>> Get()
+    {
+        var orders = await Sender.Send(new Get.Query { });
+        return Ok(orders);
+    }
 
     [HttpPost]
     public async Task<ActionResult> AddOrder([FromBody] AddOrder.Command command)

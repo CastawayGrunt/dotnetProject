@@ -11,3 +11,8 @@ docker pull postgres:14-alpine
 # The order of these arguments actually does matter
 docker run --name postgres -v postgres_volume:/var/lib/postgresql/data -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 -d postgres:14-alpine
 ```
+
+# Run project
+
+You can start this project with
+`dotnet run --project DotnetProjectApi.API/`
